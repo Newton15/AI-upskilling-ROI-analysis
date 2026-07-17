@@ -1,0 +1,556 @@
+---
+title: " BAN 663 Final Project"
+subtitle: "AI Upskilling ROI at a Mid-Size Professional Services Firm"
+author: "Newton Mwirebua"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+---
+
+<!--
+############################################################
+# BAN 663 – Final Project
+# Track:  [ ] Open (A1)   [ ] Open (A2)   [X] Structured (B)
+# Dataset: instructor-provided (3 CSVs)
+############################################################
+-->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width  = 7,
+  fig.height = 4.5
+)
+```
+
+```{r libraries}
+library(readr)
+library(dplyr)
+library(stringr)
+library(lubridate)
+library(ggplot2)
+library(scales)
+library(forcats)
+library(broom)
+```
+
+---
+
+## Introduction
+
+### Business Context
+
+The dataset describes a mid-size professional services firm with 280 consultants distributed across six industry practice areas. Over the past 24 months the firm has invested in a portfolio of AI upskilling programs — AI Foundations, Workflow Automation, Data Literacy, and Leadership in AI — and has also begun hiring consultants under a new "AI-fluent" recruiting strategy. The Chief People Officer must now decide how to allocate next year's training and hiring budget. That decision rests on whether past training has measurably moved performance and AI tool adoption, whether some practice areas need targeted enablement rather than blanket programs, and whether the new hiring strategy is delivering the AI fluency it was designed to import.
+
+### Business Questions
+
+1. **Q1:** Does training intensity (total training hours completed) predict post-training performance, after controlling for an employee's baseline performance and tenure?
+2. **Q2:** Does AI tool adoption differ meaningfully across the six industry practice areas, in a way that should change how programs are targeted?
+3. **Q3:** Do consultants hired after the firm's AI strategy reset (post-transition hires) show higher AI tool adoption than legacy employees hired before the reset?
+
+### Decision Stakes
+
+**Q1:** If training hours show a positive effect on post-performance, the CPO preserves or expands the L&D budget. If the effect is null, she redirects spending toward manager coaching, tooling, or workflow redesign.
+
+**Q2:** If practice areas differ on AI tool adoption, the firm runs targeted enablement in the lagging practices instead of one-size-fits-all rollouts.
+
+**Q3:** If post-transition hires show meaningfully higher AI adoption, the firm accelerates its AI-fluent hiring pipeline. If they do not, the bottleneck is upskilling rather than hiring, and the firm redirects investment toward existing-staff enablement.
+
+### Variable Descriptions
+
+The analysis draws on three related tables. The `employees` table holds one row per consultant and includes their `industry_practice` (one of six areas), `role_level` (Junior, Mid, Senior, Principal), `tenure_years`, `automation_exposure` (Low, Medium, High), `baseline_performance` (a 1–5 manager rating taken before the training period), and `hired_post_transition` (TRUE if hired after the firm's AI strategy reset). The `performance_outcomes` table records the post-period results for each consultant, including `post_performance` (the same 1–5 manager scale measured after the training period), `billable_hours_change` (percentage change in billable hours versus the prior period), `absenteeism_days`, `turnover_intent` (Low, Medium, High self-reported flight risk), `ai_tool_adoption_score` (a 1–10 composite of usage and proficiency), and `months_since_training`. The `training_records` table contains one row per program completion and stores `program_type`, `training_hours`, `completion_status` (Completed, Partial, Dropped), and `training_month`.
+
+---
+
+## Section 2 — Data Orientation and Quality Assessment
+
+```{r data-import}
+employees <- read_csv("data/employees.csv",            show_col_types = FALSE)
+outcomes  <- read_csv("data/performance_outcomes.csv", show_col_types = FALSE)
+training  <- read_csv("data/training_records.csv",     show_col_types = FALSE)
+```
+
+### Rapid Orientation
+
+```{r orientation}
+glimpse(employees)
+glimpse(outcomes)
+glimpse(training)
+```
+
+The three tables linked cleanly on `employee_id`. The `employees` and `outcomes` tables both have 280 rows (one per consultant), while `training` has 256 rows because some consultants took multiple programs and others none.
+
+### Quality Check 1 — Consistency in categorical text
+
+The first quality concern is consistency in the `program_type` and `completion_status` columns of `training_records`, both of which are central to any group-level analysis. If three different capitalisations of "AI Foundations" are treated as three different programs, every per-program statistic is wrong.
+
+```{r quality-check-1}
+table(training$program_type)
+table(training$completion_status)
+```
+
+**Observation:** The `program_type` column contained 12 distinct strings that mapped to only 4 real programs (AI Foundations: 90 records across three case variants; Workflow Automation: 71; Data Literacy: 64; Leadership in AI: 31). The `completion_status` column similarly had 9 distinct strings collapsing to 3 real states (Completed: 155; Partial: 74; Dropped: 27). Both were standardised in Section 3.
+
+### Quality Check 2 — Validity of date formats
+
+The `training_month` column was the only field indicating when a program was delivered, making it relevant for any cohort or recency question. A single-format date parse would silently drop a quarter of the records.
+
+```{r quality-check-2}
+head(unique(training$training_month), 15)
+length(unique(training$training_month))
+```
+
+**Observation:** The 256 training records used 52 distinct date strings spread across three formats — ISO `YYYY-MM-DD`, US `MM/DD/YYYY`, and abbreviated `Mon-YY` such as "May-24" and "Aug-23". A multi-format `parse_date_time()` call in Section 3 handled all three in one pass.
+
+### Plausibility Check
+
+```{r plausibility}
+sum(is.na(outcomes$post_performance))
+sum(outcomes$absenteeism_days > 60)
+max(outcomes$absenteeism_days)
+```
+
+**Observation:** Seventeen `post_performance` values were missing (about 6%), within an acceptable missingness range for a manager-rating column. Four records had `absenteeism_days` above 60, with a maximum of 224 — implausible on a 12-month review window where the employee remained on payroll long enough to receive a post-period review. All other numeric columns (training hours, baseline performance, tenure) were free of negative or out-of-range values.
+
+### Quality Verdict
+
+The data was structurally sound — no duplicate primary keys, and every foreign key in `training_records` and `performance_outcomes` resolved to a parent `employees` row — but contained four solvable issues: capitalisation chaos in two columns, three different date formats, six percent missingness in `post_performance`, and four extreme absenteeism values. The verdict is **Caution**: the data was usable after standardising text, parsing dates, filtering the absenteeism outliers, and letting the regression handle the missing post-performance values via `na.action`.
+
+---
+
+## Section 3 — Data Preparation and Integration
+
+```{r type-normalisation}
+training_clean <- training %>%
+  mutate(
+    training_month = parse_date_time(
+      training_month,
+      orders = c("ymd", "mdy", "by"),
+      quiet  = TRUE
+    ) %>% as_date(),
+    program_type      = str_to_title(str_squish(program_type)),
+    program_type      = str_replace_all(program_type, "\\bAi\\b", "AI"),
+    completion_status = str_to_title(str_squish(completion_status))
+  )
+```
+
+The multi-format date parse handled all three styles in one pass with zero failures. The `str_replace_all` pass after `str_to_title` restored the "AI" acronym, since title-casing alone produces the awkward "Ai Foundations" and "Leadership In Ai".
+
+```{r filter}
+cat("Records before filter:", nrow(outcomes), "\n")
+
+outcomes_clean <- outcomes %>%
+  filter(absenteeism_days <= 60)
+
+cat("Records after filter :", nrow(outcomes_clean), "\n")
+cat("Records removed      :", nrow(outcomes) - nrow(outcomes_clean), "\n")
+```
+
+**Filter justification:** Sixty-plus days of unplanned absence over a 12-month review is implausible and inconsistent with an employee remaining on payroll long enough to receive a post-period review. The four removed records were treated as data-entry errors.
+
+```{r join}
+training_per_employee <- training_clean %>%
+  group_by(employee_id) %>%
+  summarize(
+    total_training_hours = sum(training_hours, na.rm = TRUE),
+    programs_taken       = n_distinct(program_type),
+    completed_any        = any(completion_status == "Completed"),
+    .groups = "drop"
+  )
+
+analytical_data <- employees %>%
+  left_join(outcomes_clean,        by = "employee_id") %>%
+  left_join(training_per_employee, by = "employee_id") %>%
+  mutate(
+    total_training_hours = coalesce(total_training_hours, 0),
+    programs_taken       = coalesce(programs_taken,       0L),
+    completed_any        = coalesce(completed_any,        FALSE)
+  )
+```
+
+The training records were aggregated to one row per employee before joining, so the result is exactly one row per consultant. Seventy-three employees had no training record at all, and `coalesce(0)` preserved them in the analysis as zero-hour cases rather than missing data.
+
+```{r derived-variables}
+analytical_data <- analytical_data %>%
+  mutate(
+    performance_change = post_performance - baseline_performance,
+    training_engagement = case_when(
+      total_training_hours == 0                                ~ "None",
+      total_training_hours >  0 & total_training_hours <= 20   ~ "Light (1-20h)",
+      total_training_hours > 20 & total_training_hours <= 40   ~ "Moderate (21-40h)",
+      total_training_hours > 40                                ~ "Heavy (40h+)"
+    ) %>% factor(levels = c("None", "Light (1-20h)",
+                            "Moderate (21-40h)", "Heavy (40h+)")),
+    role_level      = factor(role_level,
+                             levels = c("Junior", "Mid", "Senior", "Principal")),
+    turnover_intent = factor(turnover_intent, levels = c("Low", "Medium", "High"))
+  )
+```
+
+`performance_change` isolates the period effect (post minus baseline) and is used as a derived outcome in chart and summary work. `training_engagement` buckets the continuous training hours into four readable groups for chart comparisons. The role-level and turnover-intent factors set explicit ordering so charts and tests display categories in the expected sequence.
+
+```{r analytical-dataset}
+glimpse(analytical_data)
+cat("Final analytical dataset:", nrow(analytical_data), "rows,",
+    ncol(analytical_data), "columns\n")
+```
+
+The analytical dataset has 280 rows and 20 columns, ready for the visual and statistical work below.
+
+---
+
+## Section 4 — Visual Analytics
+
+### Chart 1 — Training hours and post-period performance
+
+**Business question addressed:** Q1
+**Prediction before plotting:** A positive but modest slope was expected — more training hours associating with higher post-performance, but with substantial scatter because training is one driver among many (manager quality, project mix, tooling).
+
+```{r chart1}
+chart1 <- analytical_data %>%
+  filter(!is.na(post_performance)) %>%
+  ggplot(aes(x = total_training_hours, y = post_performance)) +
+  geom_point(alpha = 0.5, color = "#4C72B0") +
+  geom_smooth(method = "lm", se = TRUE, color = "#D1495B") +
+  labs(
+    title    = "More training hours associate with higher post-period performance",
+    subtitle = "Linear fit shown; baseline and tenure controlled for in Section 5",
+    x        = "Total training hours",
+    y        = "Post-period performance (1-5 manager rating)"
+  ) +
+  theme_minimal(base_size = 12)
+
+chart1
+```
+
+**Insight.** *Finding:* The fitted line slopes upward across the range of training hours, with most points scattered between roughly 3.0 and 4.8 on the rating scale. *Meaning:* At the firm-wide level, training and post-performance move together — the L&D investment is not invisible. *Evidence:* The predicted rating climbs from approximately 3.8 at zero hours to 4.4 at 115 hours, a meaningful firm-level shift. The wide scatter signals that training is one input among many.
+
+### Chart 2 — AI tool adoption across practice areas
+
+**Business question addressed:** Q2
+**Prediction before plotting:** Technology and Financial Services were expected to lead adoption with Public Sector or Manufacturing lagging, with a spread of at least 1–2 points on the 10-point scale.
+
+```{r chart2}
+chart2 <- analytical_data %>%
+  ggplot(aes(x = fct_reorder(industry_practice,
+                             ai_tool_adoption_score, .fun = median),
+             y = ai_tool_adoption_score)) +
+  geom_boxplot(fill = "#4C72B0", alpha = 0.75, outlier.alpha = 0.4,na.rm = TRUE) +
+  coord_flip() +
+  labs(
+    title    = "AI tool adoption is uneven across the six practice areas",
+    subtitle = "Higher score = more frequent and proficient use of AI tools",
+    x        = NULL,
+    y        = "AI tool adoption score (1-10)"
+  ) +
+  theme_minimal(base_size = 12)
+
+chart2
+```
+
+**Insight.** *Finding:* Manufacturing & Operations and Financial Services led AI adoption while Public Sector clearly trailed. *Meaning:* A blanket rollout would under-serve Public Sector and Healthcare; targeted enablement in the lagging practices is the sharper play. *Evidence:* The top-to-bottom median gap was roughly 2 points on the 10-point scale, which the ANOVA and Tukey HSD in Section 5 confirm is statistically and practically meaningful. Notably, the prediction was partially wrong — Manufacturing & Operations leads, not Technology — which itself shifts the targeting story.
+
+### Chart 3 — AI adoption across hiring cohorts
+
+**Business question addressed:** Q3
+**Prediction before plotting:** Post-transition hires were expected to show higher median AI adoption than legacy hires, because that hiring strategy was specifically designed to import AI fluency.
+
+```{r chart3}
+chart3 <- analytical_data %>%
+  mutate(
+    cohort = factor(
+      ifelse(hired_post_transition, "Post-transition (n=45)",
+                                    "Legacy (n=235)"),
+      levels = c("Legacy (n=235)", "Post-transition (n=45)")
+    )
+  ) %>%
+  ggplot(aes(x = cohort, y = ai_tool_adoption_score, fill = cohort)) +
+  geom_boxplot(alpha = 0.75, outlier.alpha = 0.4, na.rm = TRUE) +
+  scale_fill_manual(values = c("Legacy (n=235)"         = "#4C72B0",
+                               "Post-transition (n=45)" = "#D1495B"),
+                    guide = "none") +
+  labs(
+    title    = "Post-transition and legacy hires show similar AI adoption",
+    subtitle = "Two-cohort comparison; formal t-test in Section 5",
+    x        = NULL,
+    y        = "AI tool adoption score (1-10)"
+  ) +
+  theme_minimal(base_size = 12)
+
+chart3
+```
+
+**Insight.** *Finding:* The two cohort medians overlapped heavily, with the post-transition cohort sitting at or slightly below the legacy cohort. *Meaning:* The visual disconfirmed the original prediction; AI-fluent hiring did not produce an obvious adoption premium. *Evidence:* Both medians clustered between 4.2 and 4.5 on the 10-point scale — a gap that looks small at the median but turns out to be statistically significant once formally tested in Section 5.
+
+---
+
+## Section 5 — Statistical Reasoning
+
+This section runs three formal tests, one per business question. Methods follow the guidelines: multiple regression for Q1's relationship-with-controls question, ANOVA with Tukey HSD for Q2's six-group comparison, and an independent (Welch's) t-test for Q3's two-group comparison.
+
+### 5.1 — Q1: Multiple Regression
+
+**Method chosen:** Multiple linear regression.
+
+**Why this method:** Q1 asks whether training hours predict post-performance *after controlling for* baseline performance and tenure — the textbook setting for a regression with multiple predictors.
+
+**Prediction before running:** Total training hours were expected to have a small but positive, statistically significant coefficient on post-performance, because Chart 1 showed a clear upward fitted line. Baseline performance was expected to dominate variance explanation since it measures the same trait pre-period.
+**Prediction result:** Confirmed.
+
+```{r regression}
+model <- lm(
+  post_performance ~ baseline_performance + total_training_hours +
+                     tenure_years,
+  data = analytical_data
+)
+
+tidy(model)
+glance(model) %>% select(r.squared, adj.r.squared, sigma, p.value, nobs)
+```
+
+```{r regression-fit}
+glance(model)$r.squared
+glance(model)$adj.r.squared
+```
+
+**Interpretation.** *Finding:* Training hours showed a positive, highly significant coefficient on post-performance after controlling for baseline ability and tenure (estimate = 0.00452, p < 0.001). Baseline performance was overwhelmingly the dominant predictor (coefficient near 1.0), and tenure was not significant once baseline was in the model. *Meaning:* Training was moving the needle independently of who the employee already was — the budget was doing real work. The per-hour effect is small but accumulates: 10 training hours adds roughly 0.05 rating points and 50 hours adds 0.23. *Evidence:* Model R² = 0.665, meaning 66.5% of the variance in post-performance was explained by these three predictors. The data is observational, however, so the relationship is association rather than causation; confounders not in the model — manager quality, project mix, client assignment — plausibly drive part of the effect.
+
+#### Prediction for a Specific Scenario
+
+```{r prediction-scenario}
+new_scenario <- data.frame(
+  baseline_performance = 3.8,
+  total_training_hours = 35,
+  tenure_years         = 6
+)
+
+predict(model, newdata = new_scenario, interval = "prediction", level = 0.95)
+```
+
+**Prediction interpretation.** For a Senior consultant with six years of tenure, a baseline rating of 3.8, and 35 training hours invested, the model predicts a post-period rating of approximately 3.99, with a 95% prediction interval running from 3.34 to 4.63. The interval width — roughly ±0.65 rating points — tells the CPO that even for an "average" mid-tenure Senior with moderate training, individual outcomes will vary by close to a full rating point. Training raises the average; it does not guarantee the outcome.
+
+### 5.2 — Q2: ANOVA with Tukey HSD
+
+**Method chosen:** One-way ANOVA followed by Tukey HSD post-hoc.
+
+**Why this method:** Q2 compares AI adoption across six groups — the textbook setting for ANOVA, with Tukey HSD identifying which specific pairs differ.
+
+**Prediction before running:** A significant ANOVA result was expected (p < 0.05) with at least one practice differing meaningfully, because Chart 2 showed visibly separated medians spanning roughly 2 points on the 10-point scale.
+**Prediction result:** Confirmed.
+
+```{r anova}
+aov_result <- aov(ai_tool_adoption_score ~ industry_practice,
+                  data = analytical_data)
+summary(aov_result)
+TukeyHSD(aov_result)
+```
+
+```{r anova-effect-size}
+ss_total   <- sum(summary(aov_result)[[1]]$`Sum Sq`)
+ss_between <- summary(aov_result)[[1]]$`Sum Sq`[1]
+eta_sq     <- ss_between / ss_total
+eta_sq
+```
+
+**Interpretation.** *Finding:* AI tool adoption differed significantly across the six practice areas (F = 13.71, p < 0.001). Tukey HSD confirmed the leaders (Manufacturing & Operations and Financial Services, statistically tied) sat clearly above the laggards, with Public Sector versus Manufacturing & Operations showing a 2.79-point gap (p < 0.001) and Public Sector versus Financial Services a 2.56-point gap (p < 0.001). *Meaning:* Practice-level differences were real and large enough to warrant targeted enablement instead of a blanket rollout. *Evidence:* eta² = 0.202 — practice area alone explained roughly 20% of the variance in AI adoption, a large effect by conventional standards. ANOVA confirms differences exist; Tukey HSD identifies the specific pairs, and several mid-table comparisons (e.g., Technology vs. Financial Services) were not statistically distinguishable despite visible median separation on Chart 2.
+
+### 5.3 — Q3: Independent t-test
+
+**Method chosen:** Welch's two-sample t-test (R's default), which handles the very unequal cohort sizes (235 vs 45).
+
+**Why this method:** Q3 compares means between two groups — the textbook setting for a t-test, with Welch's appropriate when sample sizes and variances differ.
+
+**Prediction before running:** Originally, post-transition hires were expected to show higher AI adoption. Chart 3 suggested otherwise — the cohort medians looked nearly identical. A formal test was expected to return p > 0.05 (no significant difference); the test was run to confirm formally.
+**Prediction result:** Contradicted in two ways. The test was significant (p = 0.029), and the direction was *opposite* the original hypothesis — legacy hires score higher.
+
+```{r ttest}
+t_result <- t.test(ai_tool_adoption_score ~ hired_post_transition,
+                   data = analytical_data)
+t_result
+```
+
+```{r ttest-effect-size}
+legacy_scores <- analytical_data$ai_tool_adoption_score[
+  !analytical_data$hired_post_transition]
+legacy_scores <- legacy_scores[!is.na(legacy_scores)]
+
+post_scores   <- analytical_data$ai_tool_adoption_score[
+   analytical_data$hired_post_transition]
+post_scores   <- post_scores[!is.na(post_scores)]
+
+pooled_sd <- sqrt(((length(legacy_scores) - 1) * var(legacy_scores) +
+                   (length(post_scores)   - 1) * var(post_scores)) /
+                  (length(legacy_scores) + length(post_scores) - 2))
+
+cohen_d <- (mean(post_scores) - mean(legacy_scores)) / pooled_sd
+cohen_d
+```
+
+**Interpretation.** *Finding:* The t-test detected a significant difference, but in the opposite direction from the original hypothesis. Legacy hires scored 0.55 points higher on AI adoption than post-transition hires (4.62 vs 4.07), with the 95% confidence interval running from 0.06 to 1.05. *Meaning:* The AI-fluent hiring strategy is not delivering its intended adoption premium — it is producing the opposite. Either the recruiting filter is missing the target, legacy employees have had more time and exposure to internalise the tooling, or both. The CPO should pause expansion of the post-transition hiring pipeline and investigate why these hires under-adopt before scaling further. *Evidence:* Welch's t = 2.23, df = 68.2, p = 0.029; Cohen's d = -0.333 (small-to-medium effect, legacy higher). Sample sizes are very unequal (235 vs 45) — Welch's t-test handles the imbalance, but the smaller cohort has wider error bars. The direction of the effect is reliable; the precise magnitude should be treated as an estimate.
+
+---
+
+## Section 6 — Automation
+
+**What this function does:** It returns a per-practice summary — employee count, average training hours, average post-period performance, average AI adoption, and percentage of high-turnover-intent employees — for any of the six industry practice areas.
+
+**Why it is reusable:** The CPO needs the same review for each practice each quarter; the `practice` parameter generalises one analysis across all six segments without rewriting the code.
+
+```{r function-definition}
+practice_summary_for <- function(data, practice) {
+
+  # Input validation
+  if (!is.character(practice))
+    stop("`practice` must be a character string (e.g. 'Technology').")
+
+  valid <- unique(data$industry_practice)
+  if (!practice %in% valid)
+    stop(paste0("Practice not found: '", practice,
+                "'\nValid options: ", paste(valid, collapse = ", ")))
+
+  data %>%
+    filter(industry_practice == practice) %>%
+    summarize(
+      industry_practice    = practice,
+      n_employees          = n(),
+      avg_training_hours   = round(mean(total_training_hours,    na.rm = TRUE), 1),
+      avg_post_performance = round(mean(post_performance,        na.rm = TRUE), 2),
+      avg_ai_adoption      = round(mean(ai_tool_adoption_score,  na.rm = TRUE), 2),
+      pct_high_turnover    = round(mean(turnover_intent == "High",
+                                        na.rm = TRUE) * 100, 1),
+      .groups = "drop"
+    )
+}
+```
+
+### Demonstration — Two Valid Calls
+
+```{r function-valid-calls}
+practice_summary_for(analytical_data, "Technology")
+practice_summary_for(analytical_data, "Public Sector")
+```
+
+### Input Validation Tests
+
+```{r function-error-tests, error=TRUE}
+practice_summary_for(analytical_data, 99)              # wrong type
+practice_summary_for(analytical_data, "Spaceflight")   # not in data
+```
+
+Both error branches fired as designed: a numeric input triggered the type check, and an unrecognised practice name triggered the membership check with a clear list of valid options.
+
+### Automation Across All Practices
+
+```{r automation-loop}
+all_practices  <- unique(analytical_data$industry_practice)
+practice_table <- data.frame()
+
+for (p in all_practices) {
+  practice_table <- rbind(practice_table,
+                          practice_summary_for(analytical_data, p))
+}
+
+practice_table <- practice_table %>%
+  arrange(desc(avg_post_performance))
+
+print(practice_table, width = Inf)
+```
+
+The loop produced a one-page summary the CPO can hand to a budget meeting: one row per practice, sorted by average post-period performance. The combined view makes it easy to see at a glance which practices are simultaneously low on adoption and high on turnover risk — the priority cells for next year's investment.
+
+---
+
+## Key Findings
+
+- **Training hours predict post-period performance after controlling for baseline ability and tenure — the L&D budget is doing real work.** This is the strongest result in the analysis. Each ten training hours added roughly 0.05 rating points on the 1–5 scale; fifty hours added about 0.23. The model explained 66.5% of post-period variance (R² = 0.665, training-hours coefficient = 0.00452, p < 0.001).
+
+- **AI tool adoption is severely uneven across the six practice areas.** Manufacturing & Operations and Financial Services led the firm (statistically tied at the top), while Public Sector lagged the leaders by 2.5 to 2.8 points on the 10-point scale. Practice area alone explained 20% of adoption variance (ANOVA F = 13.71, p < 0.001, eta² = 0.202).
+
+- **The "AI-fluent hiring" pipeline is delivering the opposite of its design intent.** Post-transition hires scored 0.55 points lower on AI adoption than legacy employees, and the gap was statistically significant (Welch's t = 2.23, p = 0.029, Cohen's d = -0.333). The original prediction — that the new hiring strategy would import AI fluency — was contradicted in both significance and direction.
+
+- **The original Q2 prediction was also partially wrong, in a useful way.** Manufacturing & Operations was expected to lag and turned out to lead. Honest reporting of contradicted predictions is, in this case, more useful to the CPO than confirming intuition would have been: it forces a fresh look at what makes Manufacturing's adoption work and at why Public Sector trails.
+
+---
+
+## Recommendations
+
+1. **Hold the L&D envelope, but reallocate it toward the lagging practices.** Concentrate next year's training spend in Public Sector, Healthcare, and Retail & Consumer — the three practices that Tukey HSD confirmed are significantly below the leaders. The regression evidence shows training is paying back, so the case for spending exists; the ANOVA evidence shows uneven uptake, so the case for *targeted* spending exists.
+
+2. **Pause expansion of the AI-fluent hiring pipeline pending a root-cause review.** The post-transition cohort is the lower-adopting cohort, not the higher one. Before committing further recruiting investment, the CPO should examine whether the recruiting filter is identifying the right candidates, whether onboarding is failing to ramp them on internal tooling, or whether legacy employees benefit from accumulated exposure that new hires simply have not had time to acquire.
+
+3. **Redirect the saved hiring premium into existing-staff enablement.** The regression finding is firm-wide: more training hours predicts higher post-performance for any given starting point. The dollar that was earmarked for an AI-fluent hire who under-adopts will earn more by funding training hours for legacy employees who actually use the tools.
+
+---
+
+## Limitations
+
+- **The analysis is observational, not causal.** The regression in Section 5.1 and the per-practice summaries in Section 6 show association — they cannot rule out confounders that were not in the model. Manager quality, project mix, client assignment, and onboarding investment all plausibly drive part of every effect we observed. The recommendations above should be treated as the strongest available reading of the data, not as a settled mechanism. Before committing meaningful new spend, the CPO should pilot the targeted-rollout approach in two practices for one quarter and measure quarter-over-quarter against the rest of the firm as a control.
+
+- **The Q3 t-test compared very unequal samples.** Welch's t-test handles unequal sample sizes correctly, but the post-transition cohort was only 45 consultants against 235 legacy employees, and Cohen's d sat at the small-to-medium boundary. The direction of the effect (legacy higher) is reliable; the precise magnitude is an estimate. A second look in six months, once the post-transition cohort is larger, would tighten the confidence interval and either reinforce or rebalance the recommendation to pause hiring expansion.
+
+<!--
+############################################################
+# SUBMISSION CHECKLIST
+# Complete before submitting. Test: Session > Restart R > Knit
+#
+# KNIT AND FILES
+# [X] .Rmd knits to Word without errors on a clean session
+# [X] Data files are in a data/ subfolder (relative paths only)
+# [X] No absolute paths (no C:/Users/... or /Users/...)
+# [X] .R file named:   [LastName]_BAN663_FinalProject.R
+# [X] .Rmd file named: [LastName]_BAN663_FinalProject.Rmd
+# [X] .docx file named:[LastName]_BAN663_FinalProject.docx
+# [] Data files in data/ folder (A1 and A2 only)
+#
+# INTRODUCTION
+# [X] Business context: 3-5 sentences, specific organisation
+# [X] Decision stakes stated for each question (if X then A, if Y then B)
+# [X] Variable descriptions in plain prose
+# [] Path A2 only: Data Specification complete
+#
+# SECTION 2 — QUALITY ASSESSMENT
+# [x] Rapid orientation complete for all datasets
+# [x] 2 quality checks with business justification in narrative
+# [x] Plausibility check with specific counts
+# [x] Quality verdict stated with reasoning
+#
+# SECTION 3 — PREPARATION
+# [x] Module 2 pattern applied only where issues exist
+# [x] Filter documented with counts before and after
+# [x] Joins with coalesce() NA handling (if applicable)
+# [x] Derived variables explained in narrative prose
+# [x] Final analytical dataset confirmed with glimpse()
+#
+# SECTION 4 — VISUAL ANALYTICS
+# [x] At least 3 charts (max 5)
+# [x] Each chart has a finding-based title
+# [x] Chart variety: comparison + trend/distribution + relationship
+# [x] Writing Rule applied to every chart insight in narrative
+#
+# SECTION 5 — STATISTICAL REASONING
+# [x] Method matches question type (see Section 3.2 of guidelines)
+# [x] Prediction stated in narrative BEFORE test code
+# [x] Prediction result stated AFTER test (confirmed / contradicted / complicated)
+# [x] Effect size or R-squared interpreted in practical terms
+# [x] Prediction interval interpretation (regression only)
+# [x] No causal claims without qualification
+#
+# SECTION 6 — AUTOMATION
+# [x] Function supports a repeated business analysis task
+# [x] Takes data + meaningful business parameter
+# [x] Informative stop() input validation
+# [x] Called with 2+ valid inputs
+# [x] Both error cases tested (error=TRUE chunk)
+#
+# KEY FINDINGS / RECOMMENDATIONS / LIMITATIONS
+# [x] 3-4 findings following Writing Rule
+# [x] At least 1 finding identifies a surprise or contradicted prediction
+# [x] Each finding passes: could a manager act on this?
+# [x] Recommendations connect to decision stakes from Introduction
+# [x] 2-3 specific, data-supported recommendations
+# [x] 1-2 specific limitations named
+# [x] No R code or code commentary visible in these sections
+############################################################
+-->

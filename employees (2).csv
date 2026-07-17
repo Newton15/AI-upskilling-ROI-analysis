@@ -1,0 +1,281 @@
+"employee_id","industry_practice","industry_automation_index","role_level","tenure_years","automation_exposure","baseline_performance","hired_post_transition"
+"EMP001","Technology",7.1,"Senior",2.5,"High",4.13,FALSE
+"EMP002","Healthcare",5.4,"Mid",3.3,"High",3.63,FALSE
+"EMP003","Retail & Consumer",5.8,"Principal",0.9,"Medium",3.88,FALSE
+"EMP004","Financial Services",8.2,"Mid",8.2,"High",4.56,FALSE
+"EMP005","Financial Services",8.2,"Senior",13.6,"Medium",3.39,FALSE
+"EMP006","Manufacturing & Operations",8.6,"Junior",5.2,"High",3.9,FALSE
+"EMP007","Manufacturing & Operations",8.6,"Junior",13.5,"High",4.73,FALSE
+"EMP008","Financial Services",8.2,"Senior",0.9,"Medium",3.61,FALSE
+"EMP009","Manufacturing & Operations",8.6,"Senior",4.2,"Medium",3.84,FALSE
+"EMP010","Technology",7.1,"Principal",5.9,"High",3.98,FALSE
+"EMP011","Healthcare",5.4,"Mid",0.7,"Low",4.41,TRUE
+"EMP012","Technology",7.1,"Junior",2.2,"High",3.9,FALSE
+"EMP013","Technology",7.1,"Senior",11.7,"High",4.08,FALSE
+"EMP014","Financial Services",8.2,"Senior",2.9,"High",4.27,FALSE
+"EMP015","Healthcare",5.4,"Mid",0.7,"Medium",3.84,FALSE
+"EMP016","Financial Services",8.2,"Junior",0.8,"Medium",3.17,FALSE
+"EMP017","Healthcare",5.4,"Mid",7.1,"Medium",3.15,FALSE
+"EMP018","Financial Services",8.2,"Mid",6.3,"High",4.16,TRUE
+"EMP019","Financial Services",8.2,"Senior",5.3,"Medium",3.18,FALSE
+"EMP020","Financial Services",8.2,"Principal",11.1,"High",3.66,TRUE
+"EMP021","Financial Services",8.2,"Senior",10.2,"Medium",3.49,TRUE
+"EMP022","Technology",7.1,"Junior",5.8,"High",3.28,FALSE
+"EMP023","Manufacturing & Operations",8.6,"Junior",4.1,"Medium",3.97,FALSE
+"EMP024","Retail & Consumer",5.8,"Mid",4.8,"Low",3.54,FALSE
+"EMP025","Healthcare",5.4,"Junior",1.8,"Low",3.24,TRUE
+"EMP026","Healthcare",5.4,"Senior",1.3,"Medium",3.83,FALSE
+"EMP027","Retail & Consumer",5.8,"Mid",5,"Medium",4.43,FALSE
+"EMP028","Healthcare",5.4,"Mid",3,"High",3.19,FALSE
+"EMP029","Technology",7.1,"Mid",2.8,"Medium",4.17,FALSE
+"EMP030","Financial Services",8.2,"Senior",7,"Medium",3.33,TRUE
+"EMP031","Manufacturing & Operations",8.6,"Mid",7.7,"High",3.77,FALSE
+"EMP032","Financial Services",8.2,"Mid",0.7,"Medium",3.84,FALSE
+"EMP033","Retail & Consumer",5.8,"Junior",15.3,"High",3.46,FALSE
+"EMP034","Financial Services",8.2,"Junior",1.9,"Medium",3.4,FALSE
+"EMP035","Financial Services",8.2,"Principal",3.6,"High",3.59,FALSE
+"EMP036","Public Sector",3.2,"Junior",7.4,"Low",4.36,FALSE
+"EMP037","Healthcare",5.4,"Junior",2.7,"Low",3.59,FALSE
+"EMP038","Technology",7.1,"Junior",15.7,"High",4.05,FALSE
+"EMP039","Manufacturing & Operations",8.6,"Junior",12.7,"High",3.67,TRUE
+"EMP040","Technology",7.1,"Mid",6.2,"Medium",3.51,FALSE
+"EMP041","Financial Services",8.2,"Mid",8.8,"High",2.88,FALSE
+"EMP042","Retail & Consumer",5.8,"Senior",12,"Medium",3.74,FALSE
+"EMP043","Manufacturing & Operations",8.6,"Mid",2.6,"High",4.79,TRUE
+"EMP044","Healthcare",5.4,"Mid",0.5,"Medium",3.87,FALSE
+"EMP045","Technology",7.1,"Senior",7,"High",2.59,FALSE
+"EMP046","Healthcare",5.4,"Mid",4.9,"Medium",4.49,FALSE
+"EMP047","Financial Services",8.2,"Senior",10.2,"Medium",3.19,FALSE
+"EMP048","Healthcare",5.4,"Senior",3.2,"Low",3.22,FALSE
+"EMP049","Financial Services",8.2,"Junior",2.6,"High",3.92,FALSE
+"EMP050","Healthcare",5.4,"Mid",3.1,"Low",3.41,FALSE
+"EMP051","Financial Services",8.2,"Junior",3.2,"Medium",3.2,FALSE
+"EMP052","Retail & Consumer",5.8,"Junior",5.3,"High",4,FALSE
+"EMP053","Healthcare",5.4,"Mid",2.6,"High",3.86,FALSE
+"EMP054","Retail & Consumer",5.8,"Mid",5.2,"Medium",3.52,FALSE
+"EMP055","Healthcare",5.4,"Junior",9.7,"Medium",3.23,FALSE
+"EMP056","Manufacturing & Operations",8.6,"Junior",5.9,"Medium",3.13,FALSE
+"EMP057","Technology",7.1,"Senior",5.5,"Low",3.24,FALSE
+"EMP058","Financial Services",8.2,"Senior",2.2,"High",4.77,FALSE
+"EMP059","Healthcare",5.4,"Principal",5.8,"Medium",3.27,FALSE
+"EMP060","Retail & Consumer",5.8,"Mid",6.2,"Medium",3.61,FALSE
+"EMP061","Manufacturing & Operations",8.6,"Mid",0.8,"High",4.24,FALSE
+"EMP062","Technology",7.1,"Mid",0.6,"High",3.55,FALSE
+"EMP063","Manufacturing & Operations",8.6,"Junior",9.3,"High",3.68,FALSE
+"EMP064","Financial Services",8.2,"Junior",4.8,"High",3.44,FALSE
+"EMP065","Technology",7.1,"Senior",2.5,"High",4.31,FALSE
+"EMP066","Financial Services",8.2,"Senior",7.3,"Low",3.77,FALSE
+"EMP067","Healthcare",5.4,"Mid",1.3,"Low",3.37,FALSE
+"EMP068","Financial Services",8.2,"Mid",0.6,"Medium",3.76,FALSE
+"EMP069","Technology",7.1,"Principal",2.9,"High",4.65,FALSE
+"EMP070","Financial Services",8.2,"Junior",15.9,"Medium",2.81,FALSE
+"EMP071","Healthcare",5.4,"Mid",3.3,"Low",3.9,FALSE
+"EMP072","Healthcare",5.4,"Senior",6.9,"Medium",3.55,FALSE
+"EMP073","Public Sector",3.2,"Mid",8.9,"Medium",3.69,FALSE
+"EMP074","Financial Services",8.2,"Mid",2.9,"Low",3.38,FALSE
+"EMP075","Retail & Consumer",5.8,"Mid",3.6,"High",3.57,FALSE
+"EMP076","Retail & Consumer",5.8,"Senior",1.2,"Low",3.33,FALSE
+"EMP077","Healthcare",5.4,"Junior",1.8,"Medium",4.77,TRUE
+"EMP078","Financial Services",8.2,"Junior",14.3,"Medium",4.52,FALSE
+"EMP079","Manufacturing & Operations",8.6,"Mid",9.2,"High",4.11,FALSE
+"EMP080","Technology",7.1,"Senior",0.6,"High",3.09,FALSE
+"EMP081","Financial Services",8.2,"Senior",2.1,"Low",2.85,TRUE
+"EMP082","Financial Services",8.2,"Junior",8.8,"High",4.17,FALSE
+"EMP083","Retail & Consumer",5.8,"Principal",3.2,"Medium",4.44,FALSE
+"EMP084","Technology",7.1,"Principal",6.3,"High",3.43,FALSE
+"EMP085","Retail & Consumer",5.8,"Junior",1,"Low",4.34,FALSE
+"EMP086","Healthcare",5.4,"Junior",5.9,"High",3.89,FALSE
+"EMP087","Technology",7.1,"Mid",1.9,"Medium",3.46,FALSE
+"EMP088","Retail & Consumer",5.8,"Junior",4.5,"Low",3.83,FALSE
+"EMP089","Manufacturing & Operations",8.6,"Mid",1.7,"High",3.55,FALSE
+"EMP090","Technology",7.1,"Senior",2,"Low",4.23,FALSE
+"EMP091","Manufacturing & Operations",8.6,"Junior",7,"High",4.79,FALSE
+"EMP092","Financial Services",8.2,"Mid",1.2,"High",3.84,TRUE
+"EMP093","Manufacturing & Operations",8.6,"Junior",5.8,"High",3.48,FALSE
+"EMP094","Retail & Consumer",5.8,"Senior",7.1,"Medium",3.52,TRUE
+"EMP095","Financial Services",8.2,"Senior",9.5,"Medium",4.76,FALSE
+"EMP096","Manufacturing & Operations",8.6,"Senior",4.4,"High",3.62,FALSE
+"EMP097","Financial Services",8.2,"Mid",7,"High",3.52,FALSE
+"EMP098","Healthcare",5.4,"Senior",1.3,"Low",3.49,FALSE
+"EMP099","Manufacturing & Operations",8.6,"Mid",2,"High",3.82,FALSE
+"EMP100","Healthcare",5.4,"Junior",1.4,"Medium",3.42,FALSE
+"EMP101","Retail & Consumer",5.8,"Senior",3.2,"Low",3.4,FALSE
+"EMP102","Financial Services",8.2,"Mid",0.6,"High",4.28,FALSE
+"EMP103","Financial Services",8.2,"Junior",0.7,"High",3.68,FALSE
+"EMP104","Technology",7.1,"Mid",0.7,"High",3.74,FALSE
+"EMP105","Financial Services",8.2,"Senior",0.7,"High",3.12,TRUE
+"EMP106","Financial Services",8.2,"Junior",1.6,"Low",3.7,TRUE
+"EMP107","Healthcare",5.4,"Mid",2.6,"Low",3.52,FALSE
+"EMP108","Financial Services",8.2,"Junior",2.9,"Medium",4.1,FALSE
+"EMP109","Technology",7.1,"Senior",4.3,"Medium",2.94,FALSE
+"EMP110","Technology",7.1,"Junior",2.8,"Low",4.48,TRUE
+"EMP111","Technology",7.1,"Senior",4.2,"High",3.49,FALSE
+"EMP112","Retail & Consumer",5.8,"Junior",3.1,"Medium",3.2,FALSE
+"EMP113","Public Sector",3.2,"Junior",1.2,"High",3.57,FALSE
+"EMP114","Financial Services",8.2,"Junior",12.4,"High",4.3,FALSE
+"EMP115","Technology",7.1,"Senior",8.1,"High",3.88,FALSE
+"EMP116","Public Sector",3.2,"Principal",11.8,"Medium",4.01,FALSE
+"EMP117","Technology",7.1,"Mid",3.2,"High",3.77,FALSE
+"EMP118","Technology",7.1,"Mid",4.8,"High",4.07,TRUE
+"EMP119","Technology",7.1,"Junior",4.8,"High",3.07,FALSE
+"EMP120","Healthcare",5.4,"Senior",1,"Medium",3.82,FALSE
+"EMP121","Retail & Consumer",5.8,"Senior",4.3,"Medium",2.96,FALSE
+"EMP122","Financial Services",8.2,"Principal",12.7,"Medium",3.41,TRUE
+"EMP123","Financial Services",8.2,"Mid",2.8,"High",4.58,FALSE
+"EMP124","Healthcare",5.4,"Mid",4.7,"Low",3.24,TRUE
+"EMP125","Technology",7.1,"Mid",1.8,"Medium",3.72,FALSE
+"EMP126","Technology",7.1,"Mid",9,"Medium",4.1,FALSE
+"EMP127","Healthcare",5.4,"Mid",5.9,"High",4.01,FALSE
+"EMP128","Healthcare",5.4,"Junior",1.5,"Medium",3.84,FALSE
+"EMP129","Technology",7.1,"Mid",13.6,"High",4.62,FALSE
+"EMP130","Financial Services",8.2,"Senior",9.6,"High",3.84,FALSE
+"EMP131","Technology",7.1,"Junior",4.6,"High",3.63,FALSE
+"EMP132","Technology",7.1,"Mid",2.1,"High",4.35,FALSE
+"EMP133","Financial Services",8.2,"Senior",3,"High",3.57,FALSE
+"EMP134","Manufacturing & Operations",8.6,"Senior",1.2,"Medium",3.26,FALSE
+"EMP135","Financial Services",8.2,"Senior",10.7,"High",4.02,TRUE
+"EMP136","Technology",7.1,"Junior",1.4,"High",3.62,FALSE
+"EMP137","Technology",7.1,"Mid",6.3,"High",3.73,FALSE
+"EMP138","Financial Services",8.2,"Junior",2.6,"High",4.24,FALSE
+"EMP139","Retail & Consumer",5.8,"Mid",1.7,"Low",3.72,FALSE
+"EMP140","Financial Services",8.2,"Principal",4.8,"High",3.42,TRUE
+"EMP141","Financial Services",8.2,"Mid",1.9,"High",3.7,TRUE
+"EMP142","Manufacturing & Operations",8.6,"Mid",5.3,"High",4.23,FALSE
+"EMP143","Financial Services",8.2,"Mid",0.8,"High",3.47,TRUE
+"EMP144","Retail & Consumer",5.8,"Mid",2.1,"Medium",4.19,FALSE
+"EMP145","Financial Services",8.2,"Junior",7.1,"Medium",3.79,FALSE
+"EMP146","Manufacturing & Operations",8.6,"Mid",2.5,"High",4.37,FALSE
+"EMP147","Technology",7.1,"Junior",18,"Medium",4.1,FALSE
+"EMP148","Financial Services",8.2,"Junior",3.6,"High",3.73,FALSE
+"EMP149","Healthcare",5.4,"Junior",1.3,"Low",3.78,FALSE
+"EMP150","Manufacturing & Operations",8.6,"Junior",1,"Low",3.25,FALSE
+"EMP151","Technology",7.1,"Mid",7.4,"Low",4.64,FALSE
+"EMP152","Healthcare",5.4,"Junior",3.1,"Low",3.93,FALSE
+"EMP153","Technology",7.1,"Principal",5.4,"Medium",3.95,TRUE
+"EMP154","Financial Services",8.2,"Senior",3.5,"Low",3.74,FALSE
+"EMP155","Healthcare",5.4,"Senior",6.6,"Medium",3.76,FALSE
+"EMP156","Financial Services",8.2,"Junior",1.3,"High",3.94,FALSE
+"EMP157","Technology",7.1,"Senior",5.1,"Medium",3.82,FALSE
+"EMP158","Financial Services",8.2,"Junior",4.3,"High",3.99,FALSE
+"EMP159","Retail & Consumer",5.8,"Junior",3.6,"Medium",4.7,FALSE
+"EMP160","Financial Services",8.2,"Mid",1.3,"High",4.16,FALSE
+"EMP161","Technology",7.1,"Junior",4.6,"High",3.61,FALSE
+"EMP162","Retail & Consumer",5.8,"Junior",3.2,"Medium",3.64,FALSE
+"EMP163","Financial Services",8.2,"Mid",3.5,"High",3.68,TRUE
+"EMP164","Public Sector",3.2,"Junior",8.2,"Low",3.75,FALSE
+"EMP165","Public Sector",3.2,"Junior",9.9,"High",4.62,FALSE
+"EMP166","Technology",7.1,"Junior",2,"Medium",4.38,FALSE
+"EMP167","Financial Services",8.2,"Junior",2.4,"High",4.04,FALSE
+"EMP168","Technology",7.1,"Senior",5.4,"Medium",4.12,FALSE
+"EMP169","Public Sector",3.2,"Senior",0.6,"Medium",4.47,FALSE
+"EMP170","Public Sector",3.2,"Mid",0.7,"Low",3.72,TRUE
+"EMP171","Technology",7.1,"Junior",6.5,"High",4.09,FALSE
+"EMP172","Healthcare",5.4,"Senior",1.2,"Low",4.08,FALSE
+"EMP173","Manufacturing & Operations",8.6,"Principal",1.3,"High",3.31,FALSE
+"EMP174","Manufacturing & Operations",8.6,"Junior",1.8,"High",4.31,FALSE
+"EMP175","Manufacturing & Operations",8.6,"Principal",5,"High",3.6,FALSE
+"EMP176","Technology",7.1,"Senior",14.9,"High",4.24,FALSE
+"EMP177","Manufacturing & Operations",8.6,"Junior",2.8,"Medium",3.73,FALSE
+"EMP178","Financial Services",8.2,"Principal",1.4,"Low",3.73,FALSE
+"EMP179","Manufacturing & Operations",8.6,"Senior",3.9,"High",3.48,FALSE
+"EMP180","Healthcare",5.4,"Junior",13.4,"Medium",3.54,FALSE
+"EMP181","Technology",7.1,"Senior",15.3,"High",3.51,FALSE
+"EMP182","Healthcare",5.4,"Mid",3.1,"Medium",3.6,TRUE
+"EMP183","Technology",7.1,"Principal",13.3,"High",3.17,FALSE
+"EMP184","Healthcare",5.4,"Junior",1.5,"Medium",4.01,TRUE
+"EMP185","Manufacturing & Operations",8.6,"Mid",5.7,"High",4.62,TRUE
+"EMP186","Financial Services",8.2,"Junior",1.3,"High",4.47,FALSE
+"EMP187","Manufacturing & Operations",8.6,"Mid",4.2,"High",3.98,TRUE
+"EMP188","Technology",7.1,"Junior",1.2,"High",3.82,FALSE
+"EMP189","Technology",7.1,"Senior",18,"Medium",3.96,FALSE
+"EMP190","Technology",7.1,"Senior",12.5,"High",3.25,FALSE
+"EMP191","Healthcare",5.4,"Mid",3.5,"High",3.74,TRUE
+"EMP192","Financial Services",8.2,"Senior",2.7,"Medium",4.07,FALSE
+"EMP193","Technology",7.1,"Mid",1.8,"Low",3.98,FALSE
+"EMP194","Manufacturing & Operations",8.6,"Junior",2.5,"Medium",3.79,FALSE
+"EMP195","Manufacturing & Operations",8.6,"Principal",6.6,"High",3.23,FALSE
+"EMP196","Retail & Consumer",5.8,"Senior",1.5,"Medium",3.26,FALSE
+"EMP197","Technology",7.1,"Mid",13,"Low",4.13,TRUE
+"EMP198","Technology",7.1,"Mid",2.2,"Medium",3.68,FALSE
+"EMP199","Healthcare",5.4,"Mid",4,"Low",3.38,FALSE
+"EMP200","Financial Services",8.2,"Mid",8.2,"Medium",4.35,FALSE
+"EMP201","Healthcare",5.4,"Senior",0.8,"Low",3.8,FALSE
+"EMP202","Manufacturing & Operations",8.6,"Senior",2.7,"High",3.36,FALSE
+"EMP203","Financial Services",8.2,"Mid",18,"Low",3.56,FALSE
+"EMP204","Financial Services",8.2,"Principal",10.7,"High",4.52,FALSE
+"EMP205","Healthcare",5.4,"Mid",1.2,"Low",4.2,FALSE
+"EMP206","Manufacturing & Operations",8.6,"Junior",4,"High",3.34,FALSE
+"EMP207","Healthcare",5.4,"Mid",1.8,"Medium",4.12,FALSE
+"EMP208","Healthcare",5.4,"Junior",5.4,"Low",3.73,FALSE
+"EMP209","Retail & Consumer",5.8,"Senior",3.3,"Low",3.91,FALSE
+"EMP210","Technology",7.1,"Mid",8.3,"Medium",3.95,FALSE
+"EMP211","Retail & Consumer",5.8,"Senior",4.7,"High",4.51,TRUE
+"EMP212","Financial Services",8.2,"Senior",0.9,"Medium",3.91,FALSE
+"EMP213","Manufacturing & Operations",8.6,"Mid",0.5,"High",3.57,FALSE
+"EMP214","Manufacturing & Operations",8.6,"Junior",4.1,"High",3.36,FALSE
+"EMP215","Retail & Consumer",5.8,"Mid",14.9,"Medium",3.66,FALSE
+"EMP216","Technology",7.1,"Junior",1.8,"Medium",3.1,FALSE
+"EMP217","Healthcare",5.4,"Principal",6.1,"Low",3.79,FALSE
+"EMP218","Healthcare",5.4,"Junior",1.7,"Medium",3.69,FALSE
+"EMP219","Healthcare",5.4,"Senior",7.5,"High",3.06,TRUE
+"EMP220","Retail & Consumer",5.8,"Principal",0.7,"High",2.92,TRUE
+"EMP221","Retail & Consumer",5.8,"Mid",2.3,"Low",3.9,TRUE
+"EMP222","Financial Services",8.2,"Senior",3,"High",3.61,FALSE
+"EMP223","Retail & Consumer",5.8,"Mid",18,"High",3.22,FALSE
+"EMP224","Financial Services",8.2,"Junior",1.4,"Medium",3.57,FALSE
+"EMP225","Technology",7.1,"Senior",18,"Medium",3.84,FALSE
+"EMP226","Healthcare",5.4,"Senior",6,"High",2.8,TRUE
+"EMP227","Financial Services",8.2,"Senior",7.2,"High",3.55,FALSE
+"EMP228","Financial Services",8.2,"Senior",7.3,"High",3.95,FALSE
+"EMP229","Public Sector",3.2,"Junior",0.8,"High",3.61,FALSE
+"EMP230","Technology",7.1,"Mid",1,"Medium",3.72,FALSE
+"EMP231","Technology",7.1,"Mid",9.2,"High",3.69,FALSE
+"EMP232","Technology",7.1,"Senior",4.9,"Medium",4.6,FALSE
+"EMP233","Financial Services",8.2,"Junior",1.8,"High",4.1,FALSE
+"EMP234","Public Sector",3.2,"Principal",1.6,"Low",3.76,FALSE
+"EMP235","Technology",7.1,"Senior",4.9,"Medium",3.55,FALSE
+"EMP236","Healthcare",5.4,"Principal",18,"Low",3.99,FALSE
+"EMP237","Technology",7.1,"Mid",6.9,"Medium",3.19,FALSE
+"EMP238","Technology",7.1,"Mid",1,"Low",3.96,FALSE
+"EMP239","Healthcare",5.4,"Senior",8.9,"Medium",3.24,FALSE
+"EMP240","Financial Services",8.2,"Mid",12.2,"High",3.14,FALSE
+"EMP241","Technology",7.1,"Senior",5.4,"Low",4.67,FALSE
+"EMP242","Technology",7.1,"Senior",5.1,"High",3.49,FALSE
+"EMP243","Healthcare",5.4,"Senior",4.1,"Medium",3.89,TRUE
+"EMP244","Financial Services",8.2,"Senior",5.9,"Medium",3.36,FALSE
+"EMP245","Retail & Consumer",5.8,"Senior",5.2,"Low",2.9,FALSE
+"EMP246","Financial Services",8.2,"Senior",6.1,"Low",3.64,FALSE
+"EMP247","Manufacturing & Operations",8.6,"Junior",5.1,"High",3.99,FALSE
+"EMP248","Manufacturing & Operations",8.6,"Junior",8.5,"High",3.21,FALSE
+"EMP249","Financial Services",8.2,"Mid",4.9,"Low",4.38,FALSE
+"EMP250","Public Sector",3.2,"Mid",4.2,"Medium",3.64,FALSE
+"EMP251","Healthcare",5.4,"Mid",4.5,"High",4.35,FALSE
+"EMP252","Financial Services",8.2,"Mid",3.4,"Low",3.8,FALSE
+"EMP253","Healthcare",5.4,"Mid",7.6,"Medium",4.21,FALSE
+"EMP254","Manufacturing & Operations",8.6,"Junior",12.3,"High",4.48,FALSE
+"EMP255","Financial Services",8.2,"Junior",2.9,"Medium",3.22,FALSE
+"EMP256","Financial Services",8.2,"Senior",4.1,"High",3.39,FALSE
+"EMP257","Public Sector",3.2,"Junior",0.5,"Low",2.68,TRUE
+"EMP258","Financial Services",8.2,"Junior",9.7,"High",4.21,FALSE
+"EMP259","Retail & Consumer",5.8,"Principal",1.3,"Low",4.17,FALSE
+"EMP260","Technology",7.1,"Junior",7.7,"High",3.95,FALSE
+"EMP261","Healthcare",5.4,"Senior",1.9,"Low",3.81,FALSE
+"EMP262","Financial Services",8.2,"Mid",2.9,"High",3.74,FALSE
+"EMP263","Manufacturing & Operations",8.6,"Mid",2.9,"High",4.02,FALSE
+"EMP264","Retail & Consumer",5.8,"Junior",0.7,"Low",4.3,FALSE
+"EMP265","Financial Services",8.2,"Mid",2.3,"High",3.99,FALSE
+"EMP266","Healthcare",5.4,"Mid",3,"Medium",3.83,TRUE
+"EMP267","Manufacturing & Operations",8.6,"Mid",2.5,"High",4.66,TRUE
+"EMP268","Financial Services",8.2,"Mid",8.3,"High",3.49,FALSE
+"EMP269","Technology",7.1,"Senior",1.3,"Low",3.39,FALSE
+"EMP270","Financial Services",8.2,"Mid",5.6,"Medium",3.81,TRUE
+"EMP271","Manufacturing & Operations",8.6,"Mid",4.6,"High",3.65,TRUE
+"EMP272","Manufacturing & Operations",8.6,"Senior",15.6,"High",3.19,FALSE
+"EMP273","Healthcare",5.4,"Junior",1.6,"Low",3.57,TRUE
+"EMP274","Public Sector",3.2,"Senior",1.1,"Low",3.65,TRUE
+"EMP275","Financial Services",8.2,"Junior",1.5,"Low",3.75,FALSE
+"EMP276","Financial Services",8.2,"Junior",5.5,"High",4.36,TRUE
+"EMP277","Healthcare",5.4,"Mid",2.7,"Medium",3.72,FALSE
+"EMP278","Technology",7.1,"Junior",3.2,"High",4.09,FALSE
+"EMP279","Manufacturing & Operations",8.6,"Senior",2.5,"High",4.04,FALSE
+"EMP280","Healthcare",5.4,"Mid",7.4,"Low",4.79,FALSE

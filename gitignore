@@ -1,0 +1,13 @@
+# R history and data
+.Rhistory
+.RData
+.Rproj.user/
+.Ruserdata
+
+# Knitted output caches
+*_cache/
+*_files/
+
+# OS files
+.DS_Store
+Thumbs.db
